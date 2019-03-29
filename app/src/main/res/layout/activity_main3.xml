@@ -33,8 +33,8 @@
                 android:id="@+id/button2"
                 android:layout_width="400dp"
                 android:layout_height="140dp"
-                android:drawableTop="@drawable/ic_fan"
-                android:text="fan"
+                android:drawableTop="@drawable/ic_light_bulb"
+                android:text="light"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:fontFamily="casual" />
