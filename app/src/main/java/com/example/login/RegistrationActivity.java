@@ -1,7 +1,9 @@
 package com.example.login;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,8 +11,11 @@ import android.widget.TextView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.sql.DataSource;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -26,8 +31,9 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText State;
     private EditText PostalCode;
     private Button Registration;
+    private Connection con;
+    private String TAG = RegistrationActivity.class.getSimpleName();
 
-    private TextView DebugMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,36 +53,76 @@ public class RegistrationActivity extends AppCompatActivity {
         PostalCode = findViewById(R.id.txtPostalCode);
         Registration = findViewById(R.id.btnRegister);
 
-        DebugMessage = findViewById(R.id.txtStatus);
-
         Registration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitRegistration();
+                Database db = new Database();
+                db.insertQuery();
+                Log.e(TAG, "Execute Query.");
             }
         });
 
     }
+    public class Database {
+        public  void insertQuery ()
+        {
+            String hostname = "home-automation-bk.cvcd3rwhftui.us-east-2.rds.amazonaws.com";
+            String dbName = "umbrella_automation";
+            String port = "3306";
+            String username = "teamumbrella";
+            String password = "a2z$pgK974";
 
-    private void submitRegistration(){
-        String host = "home-automation.cvcd3rwhftui.us-east-2.rds.amazonaws.com";
-        String username = "teamumbrella";
-        String password = "2az$pgK974";
+            String jdbcURL = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+            String sql = "insert into umbrella_automation.USER (user_name, password) values (\"user3\", \"password\");";
+            Connection c = null;
+            Statement stmt = null;
 
-        try{
-            Connection con = DriverManager.getConnection(host, username, password);
-            Statement stmt = con.createStatement();
-
-            if(con.isValid(0)){
-                DebugMessage.setText("Connected.");
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                c = DriverManager.getConnection(jdbcURL, username, password);
+                c.setAutoCommit(false);
+                stmt = c.createStatement();
+                stmt.executeUpdate(sql);
+                stmt.close();
+                c.commit();
+                c.close();
             }
-            else{
-                DebugMessage.setText("Not Connected.");
+            catch (Exception exc){
+                Log.e(TAG, exc.getMessage());
             }
         }
-        catch (SQLException err){
-            DebugMessage.setText("Error Connecting." + err.toString());
-        }
-
     }
+
+/*    private class submitRegistration extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            con = null;
+            boolean result = false;
+
+            String hostname = "home-automation-bk.cvcd3rwhftui.us-east-2.rds.amazonaws.com";
+            String dbName = "home-automation";
+            String port = "3306";
+            String username = "teamumbrella";
+            String password = "2az$pgK974";
+            String jdbcURL = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+            String sql = "insert into umbrella_automation.USER (user_name, password) values (\"user3\", \"password\");";
+
+            try{
+                Class.forName("com.mysql.jdbc.Driver");
+                con = DriverManager.getConnection(jdbcURL, username, password);
+                PreparedStatement stmt = con.prepareStatement(sql);
+                result = stmt.execute(sql);
+                stmt.close();
+
+            }
+            catch(SQLException s){
+                Log.e(TAG, s.getMessage());
+            }
+            catch(ClassNotFoundException c){
+                Log.e(TAG, c.getMessage());
+            }
+
+            return null;
+        }
+    */
 }
