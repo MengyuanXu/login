@@ -30,7 +30,7 @@
                 tools:text="Connect a Device" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/light"
                 android:layout_width="400dp"
                 android:layout_height="140dp"
                 android:drawableTop="@drawable/ic_light_bulb"
@@ -60,7 +60,7 @@
                 app:fontFamily="casual" />
 
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/temp"
                 android:layout_width="400dp"
                 android:layout_height="140dp"
                 android:drawableTop="@drawable/ic_temperature"
