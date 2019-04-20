@@ -1,23 +1,11 @@
 package com.example.login;
 
-import android.database.Cursor;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-
-import javax.sql.DataSource;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -35,7 +23,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private Button Registration;
 
     private String TAG = RegistrationActivity.class.getSimpleName();
-    DatabaseHelper dbHelper;
+    UsersDatabaseHelper dbHelper;
 
 
     @Override
@@ -56,15 +44,28 @@ public class RegistrationActivity extends AppCompatActivity {
         PostalCode = findViewById(R.id.txtPostalCode);
         Registration = findViewById(R.id.btnRegister);
 
-        dbHelper = new DatabaseHelper(this);
+        dbHelper = new UsersDatabaseHelper(this);
         final String sql = "INSERT INTO users (username, password) VALUES ('" +
                 Username + "','" + Password  + "');";
 
         Registration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper.addUser(sql);
-                Log.e(TAG, "Execute Query.");
+                if (Password.getText().equals(ConfirmPassword.getText())){
+                    if (dbHelper.addUser(sql)){
+                        Username.setText("");
+                        Password.setText("");
+                        ConfirmPassword.setText("");
+                    }
+                    else{
+                        Username.setText("Error");
+                    }
+                    Log.e(TAG, "Execute Query.");
+                }
+                else {
+
+                }
+
             }
         });
 

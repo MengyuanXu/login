@@ -1,6 +1,5 @@
 package com.example.login;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -8,27 +7,33 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class LocationDatabaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
-    private static final String TAG = "DatabaseHelper";
-    private static final String TABLE_NAME = "users";
-    private static final String COL1 = "ID";
-    private static final String COL2 = "username";
-    private static final String COL3 = "password";
+    private static final String TAG = "UsersDatabaseHelper";
+    private static final String TABLE_NAME = "location";
+    private static final String ID = "location_id";
+    private static final String LATITUDE = "latitude";
+    private static final String LONGITUDE = "longitude";
+    private static final String ROOM = "room";
+    private static final String ADDRESS = "address";
+    private static final String CITY = "city";
+    private static final String STATE = "state";
+    private static final String POSTAL_CODE = "postal_code";
 
 
-
-    public DatabaseHelper (Context context){
+    public LocationDatabaseHelper(Context context){
         super(context,TABLE_NAME,null,VERSION);
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL1 +
-                " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL2 + " TEXT, " + COL3 + " TEXT)";
+        //create USERS database table
+        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                LATITUDE + " TEXT, " + LONGITUDE + " TEXT," + ROOM + " TEXT," + ADDRESS + " TEXT, " +
+                CITY + " TEXT, " + STATE + " TEXT ," + POSTAL_CODE + " TEXT" + ")";
         db.execSQL(createTable);
+
     }
 
     @Override
@@ -37,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addUser(String sql){
+    public boolean addLocation(String sql){
         SQLiteDatabase db = this.getWritableDatabase();
         try{
             db.execSQL(sql);
