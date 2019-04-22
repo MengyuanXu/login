@@ -2,15 +2,10 @@ package com.example.login;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -27,7 +22,9 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText PostalCode;
     private Button Registration;
 
-    private TextView DebugMessage;
+    private String TAG = RegistrationActivity.class.getSimpleName();
+    UsersDatabaseHelper dbHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,36 +44,32 @@ public class RegistrationActivity extends AppCompatActivity {
         PostalCode = findViewById(R.id.txtPostalCode);
         Registration = findViewById(R.id.btnRegister);
 
-        DebugMessage = findViewById(R.id.txtStatus);
+        dbHelper = new UsersDatabaseHelper(this);
+        final String sql = "INSERT INTO users (username, password) VALUES ('" +
+                Username + "','" + Password  + "');";
 
         Registration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitRegistration();
+                if (Password.getText().equals(ConfirmPassword.getText())){
+                    if (dbHelper.addUser(sql)){
+                        Username.setText("");
+                        Password.setText("");
+                        ConfirmPassword.setText("");
+                    }
+                    else{
+                        Username.setText("Error");
+                    }
+                    Log.e(TAG, "Execute Query.");
+                }
+                else {
+
+                }
+
             }
         });
 
     }
 
-    private void submitRegistration(){
-        String host = "home-automation.cvcd3rwhftui.us-east-2.rds.amazonaws.com";
-        String username = "teamumbrella";
-        String password = "2az$pgK974";
 
-        try{
-            Connection con = DriverManager.getConnection(host, username, password);
-            Statement stmt = con.createStatement();
-
-            if(con.isValid(0)){
-                DebugMessage.setText("Connected.");
-            }
-            else{
-                DebugMessage.setText("Not Connected.");
-            }
-        }
-        catch (SQLException err){
-            DebugMessage.setText("Error Connecting." + err.toString());
-        }
-
-    }
 }
